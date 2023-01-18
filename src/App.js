@@ -8,6 +8,10 @@ function App() {
   const [isLoading, SetIsLoading] = useState(false);
   const [error, SetError] = useState(null);
   const [Retry, SetRetry] = useState(true);
+  const[Title,SetTitle]=useState('')
+  const[OpeningText,SetOpeningText]=useState('')
+  const[ReleaseDate,SetReleaseDate]=useState('')
+  
   
 
   const FetchmovieHandler = useCallback(async () => {
@@ -15,7 +19,7 @@ function App() {
 
     try {
       
-        const response = await fetch("https://swapi.dev/api/film");
+        const response = await fetch("https://swapi.dev/api/films");
         if (!response.ok) {
           throw new Error("something went wrong.....retrying");
         }
@@ -36,7 +40,7 @@ function App() {
       SetRetry(true)
     }
     SetIsLoading(false);
-  }, []);
+  } , []);
 
   useEffect(() => {
     console.log('firsttime')
@@ -48,7 +52,7 @@ function App() {
       console.log('running')
       var id= setInterval(()=>{
          FetchmovieHandler()
-       },1000)}
+       },5000)}
 
        return ()=>clearInterval(id)
   })
@@ -82,8 +86,36 @@ function App() {
   //   Content=<p>Found No Movies</p>
   // }
 
+const MovieSubmitHandler=(event)=>{
+  event.preventDefault()
+ const NewMovie={
+    title:Title,
+    releaseDate:ReleaseDate,
+    openingText:OpeningText
+
+  }
+  console.log(NewMovie)
+}
   return (
     <React.Fragment>
+      <section>
+      <form onSubmit={MovieSubmitHandler}>
+        <section>
+        <label >Title</label>
+        <input type='text' onChange={(e)=>SetTitle(e.target.value)}></input>
+        </section>
+        <div><label >opening Text</label>
+        <input type='text' onChange={(e)=>SetOpeningText(e.target.value)}></input>
+        </div>
+        <section>
+        <label >Release Date</label>
+        <input  type='date' onChange={(e)=>SetReleaseDate(e.target.value)}></input>
+        </section>
+        <section>
+        <button>Add Movie</button>
+        </section>
+      </form>
+      </section>
       <section>
         <button onClick={FetchmovieHandler}>Fetch Movies</button>
       </section>
